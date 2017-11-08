@@ -27,6 +27,16 @@ public class Game {
         ships = field1.getFleet();
         placeShips(field1, ships);
         field1.print();
+
+        gamer2 = new Gamer(Gamer.TypeOfPlayer.Computer);
+        gamer2.setField(Field.getBaseFieldInstance());
+        gamer2.setName(getNameOfPlayer());
+        Field field2 = gamer2.getField();
+        field2.setFleet(createShips());
+        ships = field2.getFleet();
+        placeShips(field2,ships);
+        field2.print();
+        field1.printTwoFielsdBeside(field1,field2);
     }
 
     private void placeShips(Field field, Ship[] ships) {

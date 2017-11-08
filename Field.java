@@ -76,4 +76,19 @@ public class Field {
             System.out.println();
         }
     }
+
+    void printTwoFielsdBeside(Field field1, Field field2) {
+        System.out.println("поле игрока 1" + "                 " + "поле игрока 2");
+        for (int i = 0; i < bigGameField.length; i++) {
+            for (int j = 0; j < bigGameField.length; j++) {
+
+                System.out.print(field1.bigGameField[i][j]);
+            }
+            System.out.print("        ");
+            for (int j = 0; j < bigGameField.length; j++) {
+                System.out.print(field2.bigGameField[i][j]);
+            }
+            System.out.println();
+        }
+    }
 }
