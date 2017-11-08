@@ -7,11 +7,6 @@ import java.util.Random;
  * Created by Andre on 19.10.2017.
  */
 public class Game {
-    private Ship.Point coordinate;
-    private int oneDeckShipAmount = 4;
-    private int twoDecksShipAmount = 3;
-    private int threeDecksShipAmount = 2;
-    private int fourDecksShipAmount = 1;
     private Ship[] ships;
     private Gamer gamer1;
     private Gamer gamer2;
@@ -34,25 +29,25 @@ public class Game {
         Field field2 = gamer2.getField();
         field2.setFleet(createShips());
         ships = field2.getFleet();
-        placeShips(field2,ships);
+        placeShips(field2, ships);
         field2.print();
-        field1.printTwoFielsdBeside(field1,field2);
+        field1.printTwoFielsdBeside(field1, field2);
     }
 
     private void placeShips(Field field, Ship[] ships) {
         boolean isFreeCoordinate = false;
         boolean isShipPlaced = false;
         String[][] bigGameField = field.getBigGameField();
-        //todo @LR make coordinate as filed of class Ship
-        // Ship.Point coordinate = new Ship.Point(-1, -1);//negative initialization because these values are unusable on th field
 
         for (Ship ship : ships) {
+            Ship.Point coordinate;
             while (!isFreeCoordinate) {
-                coordinate = Ship.getCoordinate();
+                ship.setCoordinate(Ship.generateCoordinate());
+                coordinate = ship.getCoordinate();
                 isFreeCoordinate = field.isFreeCoordinate(coordinate, field.getBigGameField());
             }
             while (!isShipPlaced) {
-                isShipPlaced = chekFreeSpaceForPlaceTheShip(bigGameField, ship);
+                isShipPlaced = checkFreeSpaceForPlaceTheShip(bigGameField, ship);
             }
             starsAroundTheShip(bigGameField, field);
             isFreeCoordinate = false;
@@ -60,7 +55,7 @@ public class Game {
         }
     }
 
-    private boolean isShipExistOnChoosedDirection(String[][] bigGameField, Ship decks, int[] delta) {
+    private boolean isShipExistOnChoosedDirection(String[][] bigGameField, Ship ship, int[] delta) {
         int tmp = 0;
         boolean itsFree = false;
         switch (delta[0]) {
@@ -68,24 +63,24 @@ public class Game {
                 break;
             }
             case (-1): {
-                for (int i = 0; i < decks.getDeckAmount(); i++) {
-                    if (bigGameField[coordinate.getX() + (i * delta[0])][coordinate.getY()].equals("~ ")) {
+                for (int i = 0; i < ship.getDeckAmount(); i++) {
+                    if (bigGameField[ship.getCoordinate().getX() + (i * delta[0])][ship.getCoordinate().getY()].equals("~ ")) {
                         tmp++;
                     }
                 }
-                if (tmp == decks.getDeckAmount()) {
+                if (tmp == ship.getDeckAmount()) {
                     itsFree = true;
                 }
                 break;
             }
             case (1): {
-                for (int i = 0; i < decks.getDeckAmount(); i++) {
-                    if (bigGameField[coordinate.getX() + i * delta[0]][coordinate.getY()].equals("~ ")) {
+                for (int i = 0; i < ship.getDeckAmount(); i++) {
+                    if (bigGameField[ship.getCoordinate().getX() + i * delta[0]][ship.getCoordinate().getY()].equals("~ ")) {
                         tmp++;
                     }
                 }
             }
-            if (tmp == decks.getDeckAmount()) {
+            if (tmp == ship.getDeckAmount()) {
                 itsFree = true;
             }
             break;
@@ -95,23 +90,23 @@ public class Game {
             case (0):
                 break;
             case (1): {
-                for (int i = 0; i < decks.getDeckAmount(); i++) {
-                    if (bigGameField[coordinate.getX()][coordinate.getY() + i * delta[1]].equals("~ ")) {
+                for (int i = 0; i < ship.getDeckAmount(); i++) {
+                    if (bigGameField[ship.getCoordinate().getX()][ship.getCoordinate().getY() + i * delta[1]].equals("~ ")) {
                         tmp++;
                     }
                 }
-                if (tmp == decks.getDeckAmount()) {
+                if (tmp == ship.getDeckAmount()) {
                     itsFree = true;
                 }
                 break;
             }
             case (-1): {
-                for (int i = 0; i < decks.getDeckAmount(); i++) {
-                    if (bigGameField[coordinate.getX()][coordinate.getY() + i * delta[1]].equals("~ ")) {
+                for (int i = 0; i < ship.getDeckAmount(); i++) {
+                    if (bigGameField[ship.getCoordinate().getX()][ship.getCoordinate().getY() + i * delta[1]].equals("~ ")) {
                         tmp++;
                     }
                 }
-                if (tmp == decks.getDeckAmount()) {
+                if (tmp == ship.getDeckAmount()) {
                     itsFree = true;
                 }
                 break;
@@ -120,7 +115,8 @@ public class Game {
         return itsFree;
     }
 
-    private boolean chekFreeSpaceForPlaceTheShip(String[][] bigGameField, Ship ship) {
+    private boolean checkFreeSpaceForPlaceTheShip(String[][] bigGameField, Ship ship) {
+        Ship.Point coordinate = ship.getCoordinate();
         boolean isShipPlaced = false;
         int[] delta = chooseDirection(ship.getDeckAmount());
         int cellsAmountInChoosedDirectionX = (ship.getDeckAmount() - 1) * delta[0];
@@ -137,7 +133,7 @@ public class Game {
                 System.out.println("Ship" + ship.getDeckAmount() + " палубный построен с начальной координатой X: " + coordinate.getX() + "и Y: " + coordinate.getY());
                 isShipPlaced = true;
             } else {
-                Ship.getCoordinate();
+                Ship.generateCoordinate();
             }
         }
         return isShipPlaced;
@@ -149,31 +145,26 @@ public class Game {
         a = random.nextInt(4) + 1;
         int[] delta = {0, 0};
         switch (a) {
-            case (1): //UP
-                // for (int i = 1; i < deckAmount; i++) {
+            case (1):
                 delta[1] = -1;
-                //  }
                 break;
-            case (2): //DOWN
-                // for (int i = 1; i < deckAmount; i++) {
+            case (2):
                 delta[1] = 1;
-                //  }
                 break;
-            case (3): //LEFT
-                //  for (int i = 1; i < deckAmount; i++) {
+            case (3):
                 delta[0] = -1;
-                // }
                 break;
-            case (4): //RIGHT
-                // for (int i = 1; i < deckAmount; i++) {
+            case (4):
                 delta[0] = 1;
-                //}
                 break;
         }
         return delta;
     }
 
     public Ship[] createShips() {
+        int oneDeckShipAmount = 4;
+        int twoDecksShipAmount = 3;
+        int threeDecksShipAmount = 2;
         Ship[] ships = new Ship[10];
         int index = 0;
 

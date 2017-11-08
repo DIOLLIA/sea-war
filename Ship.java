@@ -4,15 +4,8 @@ import java.util.Random;
  * Created by Andre on 19.10.2017.
  */
 public class Ship {
-    public Direction getRandomDirection() {
-        return randomDirection;
-    }
 
-    public void setRandomDirection(Direction randomDirection) {
-        this.randomDirection = randomDirection;
-    }
-
-    private Direction randomDirection;
+    private Point coordinate;
     private int deckAmount;
 
     public int getDeckAmount() {
@@ -27,32 +20,17 @@ public class Ship {
         this.deckAmount = deckAmount;
     }
 
-    enum Direction {left, right, up, down}
-
-    public static Point getCoordinate() { // метод берет начальную координату и далее из метода region берет количество доступных направлений для дальнейшего расположения корабля
-        return new Point((int) (Math.random() * 10 + 1), (int) (Math.random() * 10 + 1));
-
+    public void setCoordinate(Point coordinate) {
+        this.coordinate = coordinate;
     }
 
+    public Point getCoordinate() {
+        return coordinate;
+    }
 
-    public Direction findRandomDirection() {
+    public static Point generateCoordinate() {
+        return new Point((int) (Math.random() * 10 + 1), (int) (Math.random() * 10 + 1));
 
-        int a;
-        Random random = new Random();
-        a = random.nextInt(4) + 1;
-        switch (a) {
-            case (1):
-                randomDirection = Direction.up;
-            case (2):
-                randomDirection = Direction.down;
-
-            case (3):
-                randomDirection = Direction.left;
-
-            case (4):
-                randomDirection = Direction.right;
-        }
-        return randomDirection;
     }
 
         static class Point {
