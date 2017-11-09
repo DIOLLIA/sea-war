@@ -21,7 +21,7 @@ public class Game {
         field1.setFleet(createShips());
         ships = field1.getFleet();
         placeShips(field1, ships);
-        field1.print();
+       // field1.print();
 
         gamer2 = new Gamer(Gamer.TypeOfPlayer.Computer);
         gamer2.setField(Field.getBaseFieldInstance());
@@ -30,8 +30,31 @@ public class Game {
         field2.setFleet(createShips());
         ships = field2.getFleet();
         placeShips(field2, ships);
-        field2.print();
-        field1.printTwoFielsdBeside(field1, field2);
+       // field2.print();
+       // field1.printTwoFielsdBeside(field1, field2);
+        shooting(field1,field2);
+
+    }
+    private void shooting(Field field1,Field field2){
+        for (int i = 0; i < 20; i++) {
+            shootingOnTheFirstField(field1, Ship.generateCoordinate());
+            shootingOnTheFirstField(field2,Ship.generateCoordinate());
+            field1.printTwoFielsdBeside(field1,field2);
+        }
+    }
+
+    private void shootingOnTheFirstField(Field field1, Ship.Point coordinate) {
+        int[] shootedCell = {coordinate.getX(), coordinate.getY()};
+        field1.getBigGameField();
+        String[][] bigGameField = field1.getBigGameField();
+        if (bigGameField[shootedCell[0]][shootedCell[1]].equals(DECK)) {
+            System.out.println("Попал!!");
+            bigGameField[shootedCell[0]][shootedCell[1]] = "W ";
+
+        } else {
+            System.out.println("промазал");
+            bigGameField[shootedCell[0]][shootedCell[1]] = "x ";
+        }
     }
 
     private void placeShips(Field field, Ship[] ships) {
