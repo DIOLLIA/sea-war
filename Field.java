@@ -7,6 +7,7 @@ public class Field {
     private String[][] bigGameField = new String[11][11];
     private Ship[] fleet;
 
+
     public String getEMPTY_CELL() {
         return EMPTY_CELL;
     }
@@ -90,5 +91,13 @@ public class Field {
             }
             System.out.println();
         }
+    }
+    void seeYourCoordinateCorrect(Ship.Point coordinate){
+
+               int liter =  coordinate.getX();
+               int number = coordinate.getY();
+               String literABC = LETTERS[coordinate.getY()-1];
+        String numberOfLine = String.valueOf(coordinate.getX());
+        System.out.println("выстрел в " + literABC + " " + numberOfLine);
     }
 }

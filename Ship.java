@@ -5,6 +5,9 @@ import java.util.Random;
  */
 public class Ship {
 
+    Ship(){
+
+    }
     private Point coordinate;
     private int deckAmount;
 
