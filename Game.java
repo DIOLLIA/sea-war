@@ -21,8 +21,6 @@ public class Game {
         field1.setFleet(createShips());
         ships = field1.getFleet();
         placeShips(field1, ships);
-        // field1.print();
-
         gamer2 = new Gamer(Gamer.TypeOfPlayer.Computer);
         gamer2.setField(Field.getBaseFieldInstance());
         gamer2.setName(getNameOfPlayer());
@@ -30,15 +28,13 @@ public class Game {
         field2.setFleet(createShips());
         ships = field2.getFleet();
         placeShips(field2, ships);
-        // field2.print();
-        // field1.printTwoFielsdBeside(field1, field2);
         Gun gun = new Gun();
-
-        gun.shoot(field1, field2);
+        do {
+            gun.shoot(field1, field2);
+        }
+        while (isItVictory(field1, field2));
 
     }
-
-
 
 
     private void placeShips(Field field, Ship[] ships) {
@@ -255,5 +251,47 @@ public class Game {
                 }
             }
         }
+    }
+    boolean isItVictory(Field field1, Field field2) {
+        boolean victory = true;
+        int a = 0;
+        int b = 0;
+
+        for (int i = 0; i < field1.getBigGameField().length; i++) {
+            if (a != 0) {
+                break;
+            }
+            for (int j = 0; j < field1.getBigGameField().length; j++) {
+                if (field1.getBigGameField()[i][j].equals(DECK)) {
+                    a++;
+                    break;
+                }
+            }
+        }
+        if (a > 0)
+        {
+            for (int i = 0; i < field2.getBigGameField().length; i++) {
+                if (b != 0) {
+                    break;
+                }
+                for (int j = 0; j < field2.getBigGameField().length; j++) {
+                    if (field2.getBigGameField()[i][j].equals(DECK)) {
+                        b++;
+                        break;
+                    }
+                }
+            }
+        }
+        if (a == 0)
+        {
+            victory = false;
+            System.out.println("Победа игрока 2");
+        }
+        if (b == 0 && a != 0)
+        {
+            victory = false;
+            System.out.println("Победа игрока 1");
+        }
+        return victory;
     }
 }

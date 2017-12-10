@@ -1,21 +1,23 @@
+
 public class Gun extends Ship {
-    Game game;
 
     String DECK = "0 ";
+    private static int counter = 0;
 
     protected void shoot(Field field1, Field field2) {
 
-        for (int i = 0; i < 20; i++) {
-            if (i % 2 == 0) {
-                System.out.println("ход игрока 2, стреляем в поле 1");
-                while (!isShotFinished(field1, Ship.generateCoordinate())) ;
-            } else {
-                System.out.println("ход игрока 1, стреляем в поле 2");
-                while (!isShotFinished(field2, Ship.generateCoordinate())) ;
-            }
-            field1.printTwoFielsdBeside(field1, field2);
+        if (counter % 2 == 0) {
+            System.out.println("ход игрока 2, стреляем в поле 1");
+            while (!isShotFinished(field1, Ship.generateCoordinate())) ;
+            counter++;
+        } else {
+            System.out.println("ход игрока 1, стреляем в поле 2");
+            while (!isShotFinished(field2, Ship.generateCoordinate())) ;
+            counter++;
         }
+        field1.printTwoFielsdBeside(field1, field2);
     }
+
 
     protected boolean isShotFinished(Field field, Ship.Point coordinate) {
         boolean hit = false;
@@ -45,13 +47,12 @@ public class Gun extends Ship {
                     wonded = true;
                 }
 
-        if (wonded == true) {
-            System.out.println("ранил!");
-        } else {
-            System.out.println("убит");
-        }
-    }
-        else if (bigGameField[shootedCell[0]][shootedCell[1]].equals("* ") || bigGameField[shootedCell[0]][shootedCell[1]].equals("~ ")) {
+            if (wonded == true) {
+                System.out.println("ранил!");
+            } else {
+                System.out.println("убит");
+            }
+        } else if (bigGameField[shootedCell[0]][shootedCell[1]].equals("* ") || bigGameField[shootedCell[0]][shootedCell[1]].equals("~ ")) {
             System.out.println("промазал");
             bigGameField[shootedCell[0]][shootedCell[1]] = "x ";
             hit = true;
