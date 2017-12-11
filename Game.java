@@ -3,6 +3,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Random;
 
+
+/*TODO рисовать поле после каждого выстрела (ранил, убил, не попал...)
+не работают координаты с цифрой 10
+игра не закончилась после последнего убитого человеком корабля
+имя не отображается (его вводят в начале игры)
+нет сообщений о вводе неверного формата, о том что в клетку уже стреляли
+сделать вторую сложность для обсрела раненой клетки
+
+*/
 /**
  * Created by Andre on 19.10.2017.
  */
@@ -208,42 +217,42 @@ public class Game {
 
                 if (bigGameField[y][x].equals(DECK)) {//5
                     if (x <= 10 && y < 10 && x > 1 && y >= 1) {
-                        if (bigGameField[y + 1][x - 1].equals(field.getEMPTY_CELL())) {//1
+                        if (bigGameField[y + 1][x - 1].equals(field.STAR())) {//1
                             bigGameField[y + 1][x - 1] = ("* ");
                         }
                     }
                     if (x <= 10 && y < 10 && x >= 1 && y >= 1) {
-                        if (bigGameField[y + 1][x].equals(field.getEMPTY_CELL())) {//2
+                        if (bigGameField[y + 1][x].equals(field.STAR())) {//2
                             bigGameField[y + 1][x] = ("* ");
                         }
                     }
                     if (x < 10 && y < 10 && x >= 1 && y >= 1) {
-                        if (bigGameField[y + 1][x + 1].equals(field.getEMPTY_CELL())) {//3
+                        if (bigGameField[y + 1][x + 1].equals(field.STAR())) {//3
                             bigGameField[y + 1][x + 1] = ("* ");
                         }
                     }
                     if (x <= 10 && y <= 10 && x > 1 && y >= 1) {
-                        if (bigGameField[y][x - 1].equals(field.getEMPTY_CELL())) {//4
+                        if (bigGameField[y][x - 1].equals(field.STAR())) {//4
                             bigGameField[y][x - 1] = ("* ");
                         }
                     }
                     if (x < 10 && y <= 10 && x >= 1 && y >= 1) {
-                        if (bigGameField[y][x + 1].equals(field.getEMPTY_CELL())) {//6
+                        if (bigGameField[y][x + 1].equals(field.STAR())) {//6
                             bigGameField[y][x + 1] = ("* ");
                         }
                     }
                     if (x <= 10 && y <= 10 && x > 1 && y > 1) {
-                        if (bigGameField[y - 1][x - 1].equals(field.getEMPTY_CELL())) {//7
+                        if (bigGameField[y - 1][x - 1].equals(field.STAR())) {//7
                             bigGameField[y - 1][x - 1] = ("* ");
                         }
                     }
                     if (x <= 10 && y <= 10 && x >= 1 && y > 1) {
-                        if (bigGameField[y - 1][x].equals(field.getEMPTY_CELL())) {//8
+                        if (bigGameField[y - 1][x].equals(field.STAR())) {//8
                             bigGameField[y - 1][x] = ("* ");
                         }
                     }
                     if (x < 10 && y <= 10 && x >= 1 && y > 1) {
-                        if (bigGameField[y - 1][x + 1].equals(field.getEMPTY_CELL())) {//9
+                        if (bigGameField[y - 1][x + 1].equals(field.STAR())) {//9
                             bigGameField[y - 1][x + 1] = ("* ");
                         }
                     }
@@ -285,12 +294,12 @@ public class Game {
         if (a == 0)
         {
             victory = false;
-            System.out.println("Победа игрока 2");
+            System.out.println("Победа игрока 2 (комп)");
         }
         if (b == 0 && a != 0)
         {
             victory = false;
-            System.out.println("Победа игрока 1");
+            System.out.println("Победа игрока 1 (чел)");
         }
         return victory;
     }

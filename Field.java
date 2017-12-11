@@ -2,13 +2,13 @@
  * Created by Andre on 19.10.2017.
  */
 public class Field {
-    private static final String LETTERS[] = {"A ", "B ", "C ", "D ", "E ", "F ", "G ", "H ", "I ", "G "};
+    private static final String LETTERS[] = {"A ", "B ", "C ", "D ", "E ", "F ", "G ", "H ", "I ", "J "};
 
     private String[][] bigGameField = new String[11][11];
     private Ship[] fleet;
 
 
-    public String getEMPTY_CELL() {
+    public String STAR() {
         return EMPTY_CELL;
     }
 
@@ -82,21 +82,33 @@ public class Field {
         System.out.println("поле игрока 1" + "                 " + "поле игрока 2");
         for (int i = 0; i < bigGameField.length; i++) {
             for (int j = 0; j < bigGameField.length; j++) {
-
+                if (field1.bigGameField[i][j].equals(DECK))
+                    System.out.print("~ ");
+                else if (field1.bigGameField[i][j].equals("~ "))
+                    System.out.print("~ ");
+                else if (field1.bigGameField[i][j].equals("* "))
+                    System.out.print("~ ");
+else
                 System.out.print(field1.bigGameField[i][j]);
             }
             System.out.print("        ");
             for (int j = 0; j < bigGameField.length; j++) {
+                if (field2.bigGameField[i][j].equals(DECK))
+                    System.out.print("~ ");
+                else if (field2.bigGameField[i][j].equals("~ "))
+                    System.out.print("~ ");
+                else if (field2.bigGameField[i][j].equals("* "))
+                    System.out.print("~ ");
+                else
                 System.out.print(field2.bigGameField[i][j]);
             }
             System.out.println();
         }
     }
-    void seeYourCoordinateCorrect(Ship.Point coordinate){
 
-               int liter =  coordinate.getX();
-               int number = coordinate.getY();
-               String literABC = LETTERS[coordinate.getY()-1];
+    void seeYourCoordinateCorrect(Ship.Point coordinate) {
+
+        String literABC = LETTERS[coordinate.getY() - 1];
         String numberOfLine = String.valueOf(coordinate.getX());
         System.out.println("выстрел в " + literABC + " " + numberOfLine);
     }
