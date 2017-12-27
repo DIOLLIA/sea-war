@@ -3,7 +3,8 @@
  */
 public class Field {
     private static final String LETTERS[] = {"A ", "B ", "C ", "D ", "E ", "F ", "G ", "H ", "I ", "J "};
-
+    Game game;
+    Gamer gamer;
     private String[][] bigGameField = new String[11][11];
     private Ship[] fleet;
 
@@ -69,17 +70,9 @@ public class Field {
         return playerField[coordinate.getX()][coordinate.getY()].equals(EMPTY_CELL);
     }
 
-    void print() { // вывод поля на печать
-        for (int i = 0; i < bigGameField.length; i++) {
-            for (int j = 0; j < bigGameField.length; j++) {
-                System.out.print(bigGameField[i][j]);
-            }
-            System.out.println();
-        }
-    }
-
     void printTwoFielsdBeside(Field field1, Field field2) {
-        System.out.println("поле игрока 1" + "                 " + "поле игрока 2");
+
+        System.out.println("поле игрока " + "                 "+ "поле игрока ");
         for (int i = 0; i < bigGameField.length; i++) {
             for (int j = 0; j < bigGameField.length; j++) {
                 if (field1.bigGameField[i][j].equals(DECK))

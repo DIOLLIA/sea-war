@@ -1,25 +1,10 @@
 
 
 public class Gun extends Ship {
+    Game game;
     String DECK = "0 ";
-    private static int counter = 0;
-    private static final String SHOOTED_CELL= "W ";
-    private static final String STAR= "* ";
-    protected void shoot(Field field1, Field field2) {
-
-        if (counter % 2 == 0) {
-            System.out.println("ход игрока 2, стреляем в поле 1");
-            while (!isShotFinished(field1, Ship.generateCoordinate())) ;
-            counter++;
-        } else {
-            humanShot(field2);
-            /*System.out.println("ход игрока 1, стреляем в поле 2");
-            while (!isShotFinished(field2, Ship.generateCoordinate())) ;
-            counter++;*/
-        }
-        field1.printTwoFielsdBeside(field1, field2);
-    }
-
+    private static final String SHOOTED_CELL = "W ";
+    private static final String STAR = "* ";
 
     protected boolean isShotFinished(Field field, Ship.Point coordinate) {
         boolean hit = false;
@@ -62,11 +47,15 @@ public class Gun extends Ship {
             bigGameField[shootedCell[0]][shootedCell[1]] = "x ";
             hit = true;
         } else if (bigGameField[shootedCell[0]][shootedCell[1]].equals("x ") || bigGameField[shootedCell[0]][shootedCell[1]].equals("W ")) {
-            //System.out.println("в эту клетку уже стреляли");
+            if (game.typeOfPlayer.equals(Gamer.TypeOfPlayer.Human)){
+                System.out.println("That cell is almost shoted");}
+
+                else if (bigGameField[shootedCell[0]][shootedCell[1]].equals("` ")&&game.typeOfPlayer.equals(Gamer.TypeOfPlayer.Human)){
+                System.out.println("there is no necessity to shot here");}
             hit = false;
         }
-        if (shipAreDead){
-            createDeadFieldAroundShip(field.getBigGameField(),field);
+        if (shipAreDead) {
+            createDeadFieldAroundShip(field.getBigGameField(), field);
         }
         return hit;
     }
@@ -123,13 +112,6 @@ public class Gun extends Ship {
 
 
         }
-
-    }
-    protected void humanShot(Field computersField){
-
-        System.out.println("Человек, введи координату в формате ЛИТЕРАЦИФРА, например D2");
-        while (!isShotFinished(computersField, Ship.getCoordinateFromHuman())) ;
-        counter++;
 
     }
 }

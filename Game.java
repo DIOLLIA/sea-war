@@ -2,49 +2,113 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Random;
+import java.util.Scanner;
 
 
 /*TODO рисовать поле после каждого выстрела (ранил, убил, не попал...)
-не работают координаты с цифрой 10
-игра не закончилась после последнего убитого человеком корабля
-имя не отображается (его вводят в начале игры)
+игра не закончилась после последнего убитого человеком корабля`
 нет сообщений о вводе неверного формата, о том что в клетку уже стреляли
 сделать вторую сложность для обсрела раненой клетки
 
 */
+
 /**
  * Created by Andre on 19.10.2017.
  */
 public class Game {
+    private static int counter = 0;
+    Gamer.TypeOfPlayer typeOfPlayer;
     private Ship[] ships;
     private Gamer gamer1;
     private Gamer gamer2;
     private final String DECK = "0 ";
+    Gun gun = new Gun();
+    public String nameOfFirstPlayer ;
+    public String nameOfKompukter;
+
+    public String getNameOfKompukter() {
+        return nameOfKompukter;
+    }
+
+    public void setNameOfKompukter(String nameOfKompukter) {
+        this.nameOfKompukter = nameOfKompukter;
+    }
+
+    public Gamer getGamer1() {
+        return gamer1;
+    }
+
+    public void setGamer1(Gamer gamer1) {
+        this.gamer1 = gamer1;
+    }
+
+    public Gamer getGamer2() {
+        return gamer2;
+    }
+
+    public String getNameOfFirstPlayer() {
+        return nameOfFirstPlayer;
+    }
+
+    public void setNameOfFirstPlayer(String nameOfFirstPlayer) {
+        this.nameOfFirstPlayer = nameOfFirstPlayer;
+    }
 
     void start() {
         greetings();
-        gamer1 = new Gamer(Gamer.TypeOfPlayer.Computer);
+
+        gamer1 = new Gamer(typeOfGamer());
         gamer1.setField(Field.getBaseFieldInstance());
         gamer1.setName(getNameOfPlayer());
+        setNameOfFirstPlayer(gamer1.getName());
         Field field1 = gamer1.getField();
         field1.setFleet(createShips());
         ships = field1.getFleet();
         placeShips(field1, ships);
+        setGamer1(gamer1);
         gamer2 = new Gamer(Gamer.TypeOfPlayer.Computer);
         gamer2.setField(Field.getBaseFieldInstance());
-        gamer2.setName(getNameOfPlayer());
+        gamer2.setName("КОМП2ZZ01ver");
+        setNameOfKompukter(gamer2.getName());
         Field field2 = gamer2.getField();
         field2.setFleet(createShips());
         ships = field2.getFleet();
         placeShips(field2, ships);
-        Gun gun = new Gun();
+
         do {
-            gun.shoot(field1, field2);
+            shoot(field1, field2);
         }
         while (isItVictory(field1, field2));
 
     }
 
+    public void shoot(Field field1, Field field2) {
+
+
+        if (counter % 2 == 0) {
+            System.out.println("ход " + gamer2.getName() + "'a, стреляем в поле 1");
+            while (!gun.isShotFinished(field1, Ship.generateCoordinate())) {
+                field1.printTwoFielsdBeside(field1, field2);
+            }
+            counter++;
+        } else if (typeOfPlayer.equals(Gamer.TypeOfPlayer.Human)) {
+            humanShot(field2);
+        } else if (typeOfPlayer.equals(Gamer.TypeOfPlayer.Computer)) {
+            System.out.println("комп 1, стреляем в поле 2");
+            while (!gun.isShotFinished(field2, Ship.generateCoordinate())) ;
+            counter++;
+        }
+        field1.printTwoFielsdBeside(field1, field2);
+    }
+
+    public void humanShot(Field computersField) {
+        String humanName = getGamer1().getName();
+        System.out.println(humanName + ", введи координату в формате ЛИТЕРАЦИФРА, например D2");
+        while (!gun.isShotFinished(computersField, Ship.getCoordinateFromHuman())) {
+            computersField.printTwoFielsdBeside(gamer1.getField(), gamer2.getField());
+        }
+        counter++;
+    }
 
     private void placeShips(Field field, Ship[] ships) {
         boolean isFreeCoordinate = false;
@@ -261,6 +325,7 @@ public class Game {
             }
         }
     }
+
     boolean isItVictory(Field field1, Field field2) {
         boolean victory = true;
         int a = 0;
@@ -277,8 +342,7 @@ public class Game {
                 }
             }
         }
-        if (a > 0)
-        {
+        if (a > 0) {
             for (int i = 0; i < field2.getBigGameField().length; i++) {
                 if (b != 0) {
                     break;
@@ -291,16 +355,37 @@ public class Game {
                 }
             }
         }
-        if (a == 0)
-        {
+        if (a == 0) {
             victory = false;
-            System.out.println("Победа игрока 2 (комп)");
+            System.out.println("Победа игрока комп");
         }
-        if (b == 0 && a != 0)
-        {
+        if (b == 0 && a != 0) {
             victory = false;
-            System.out.println("Победа игрока 1 (чел)");
+            System.out.println("Победа игрока " + gamer1.getName());
         }
         return victory;
+    }
+
+    private Gamer.TypeOfPlayer typeOfGamer() { //todo add processing of type of int value
+        System.out.println("choose type of battle: \n type 1 for humanVSkomp\n type 2 for kompVSkomp");
+        Scanner sc = new Scanner(System.in);
+        while (typeOfPlayer == null) {
+            int typeOfSecondPlayer = sc.nextInt();
+            switch (typeOfSecondPlayer) {
+                case 1:
+                    System.out.println("you've choosed humanVSkomp");
+                    typeOfPlayer = Gamer.TypeOfPlayer.Human;
+                    break;
+                case 2:
+                    System.out.println("you've choosed kompVSkomp");
+                    typeOfPlayer = Gamer.TypeOfPlayer.Computer;
+                    break;
+                default:
+                    System.out.println("Choose correctly! type 1 for humanVSkomp or type 2 for kompVSkomp");
+                    typeOfPlayer = null;
+                    sc.hasNext();
+            }
+        }
+        return typeOfPlayer;
     }
 }

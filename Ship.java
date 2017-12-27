@@ -41,39 +41,54 @@ public class Ship {
     }
 
     public static Point getCoordinateFromHuman() {
+        boolean successCoordinateFormat = false;
         int x = 0;
         int y = 0;
         BufferedReader bfreader = new BufferedReader(new InputStreamReader(System.in));
         String coordinateFromHuman = null;
+        while (!successCoordinateFormat) {
+            try {
+                coordinateFromHuman = bfreader.readLine();
+            } catch (IOException incorrectInsert) {
+                System.out.println("неверный ввод");
+            }
+            char[] coordinateFromHumanToChar = coordinateFromHuman.toUpperCase().toCharArray();
 
-        try {
-            coordinateFromHuman = bfreader.readLine();
-        } catch (IOException incorrectInsert) {
-            System.out.println("неверный ввод");
+            if (coordinateFromHumanToChar[0] == 'A')
+                x = 1;
+            else if (coordinateFromHumanToChar[0] == 'B')
+                x = 2;
+            else if (coordinateFromHumanToChar[0] == 'C')
+                x = 3;
+            else if (coordinateFromHumanToChar[0] == 'D')
+                x = 4;
+            else if (coordinateFromHumanToChar[0] == 'E')
+                x = 5;
+            else if (coordinateFromHumanToChar[0] == 'F')
+                x = 6;
+            else if (coordinateFromHumanToChar[0] == 'G')
+                x = 7;
+            else if (coordinateFromHumanToChar[0] == 'H')
+                x = 8;
+            else if (coordinateFromHumanToChar[0] == 'I')
+                x = 9;
+            else if (coordinateFromHumanToChar[0] == 'J')
+                x = 10;
+            try {
+                y = Integer.parseInt(String.valueOf(coordinateFromHumanToChar[1]));
+                if (coordinateFromHumanToChar.length == 3&&coordinateFromHumanToChar[1]=='1'&&coordinateFromHumanToChar[2]=='0') {
+                    y = 10;
+                }
+                if ((Character) coordinateFromHumanToChar[0] instanceof Character && ((Integer) y instanceof Integer )) {
+                    successCoordinateFormat = true;
+                }
+            } catch (Exception wrongFormatOfCoordinate) {
+                System.out.println("Incorrect coordinate format.Try again, for example W5");
+                successCoordinateFormat = false;
+            }
+
         }
-        char[] coordinateFromHumanToChar = coordinateFromHuman.toCharArray();
-        if (coordinateFromHumanToChar[0] == 'A')
-            x = 1;
-        else if (coordinateFromHumanToChar[0] == 'B')
-            x = 2;
-        else if (coordinateFromHumanToChar[0] == 'C')
-            x = 3;
-        else         if (coordinateFromHumanToChar[0]=='D')
-            x=4;
-        else         if (coordinateFromHumanToChar[0]=='E')
-            x=5;
-        else         if (coordinateFromHumanToChar[0]=='F')
-            x=6;
-        else         if (coordinateFromHumanToChar[0]=='G')
-            x=7;
-        else         if (coordinateFromHumanToChar[0]=='H')
-            x=8;
-        else         if (coordinateFromHumanToChar[0]=='I')
-            x=9;
-        else         if (coordinateFromHumanToChar[0]=='J')
-            x=10;
 
-        y=Integer.parseInt(String.valueOf(coordinateFromHumanToChar[1]));
         return new Point(y, x);
     }
 
