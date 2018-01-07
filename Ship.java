@@ -76,10 +76,10 @@ public class Ship {
                 x = 10;
             try {
                 y = Integer.parseInt(String.valueOf(coordinateFromHumanToChar[1]));
-                if (coordinateFromHumanToChar.length == 3&&coordinateFromHumanToChar[1]=='1'&&coordinateFromHumanToChar[2]=='0') {
+                if (coordinateFromHumanToChar.length == 3 && coordinateFromHumanToChar[1] == '1' && coordinateFromHumanToChar[2] == '0') {
                     y = 10;
                 }
-                if ((Character) coordinateFromHumanToChar[0] instanceof Character && ((Integer) y instanceof Integer )) {
+                if ((Character) coordinateFromHumanToChar[0] instanceof Character && ((Integer) y instanceof Integer)) {
                     successCoordinateFormat = true;
                 }
             } catch (Exception wrongFormatOfCoordinate) {

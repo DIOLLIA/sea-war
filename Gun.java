@@ -1,12 +1,16 @@
 
 
 public class Gun extends Ship {
-    Game game;
+
+    static boolean allShipsAreDead1 = false;
+    static boolean allShipsAreDead2 = false;
     String DECK = "0 ";
     private static final String SHOOTED_CELL = "W ";
     private static final String STAR = "* ";
+    private static int deadShips1 = 0;
+    private static int deadShips2 = 0;
 
-    protected boolean isShotFinished(Field field, Ship.Point coordinate) {
+    protected boolean isShotFinished(Field field, Ship.Point coordinate, Gamer.TypeOfPlayer playerType) { //todo когда последний корабль подстрелен, пограмма не завершает цикл
         boolean hit = false;
         boolean wonded = false;
         boolean shipAreDead = false;
@@ -36,27 +40,39 @@ public class Gun extends Ship {
                 }
 
             if (wonded == true) {
-                System.out.println("ранил!");
+                System.out.println("wounded!");
             } else {
-                System.out.println("убит");
+                System.out.println("drowned");
+                if (Game.nameOfKompukter.equals("KoMPukTeP###111")) {
+                    deadShips1++;
+                } else deadShips2++; //todo при игре комп\комп все очки идут в один счетчик
                 shipAreDead = true;
             }
         } else if (bigGameField[shootedCell[0]][shootedCell[1]].equals("* ") || bigGameField[shootedCell[0]][shootedCell[1]].equals("~ ")) {
             field.seeYourCoordinateCorrect(coordinate);
-            System.out.println("промазал");
-            bigGameField[shootedCell[0]][shootedCell[1]] = "x ";
+            System.out.println("missed");
+            bigGameField[shootedCell[0]][shootedCell[1]] = "\" ";
             hit = true;
-        } else if (bigGameField[shootedCell[0]][shootedCell[1]].equals("x ") || bigGameField[shootedCell[0]][shootedCell[1]].equals("W ")) {
-            if (game.typeOfPlayer.equals(Gamer.TypeOfPlayer.Human)){
-                System.out.println("That cell is almost shoted");}
-
-                else if (bigGameField[shootedCell[0]][shootedCell[1]].equals("` ")&&game.typeOfPlayer.equals(Gamer.TypeOfPlayer.Human)){
-                System.out.println("there is no necessity to shot here");}
-            hit = false;
+        } else if (bigGameField[shootedCell[0]][shootedCell[1]].equals("\" ") || bigGameField[shootedCell[0]][shootedCell[1]].equals("W ")) {
+            if (playerType.equals(Gamer.TypeOfPlayer.Human)) {
+                System.out.println("That cell is almost shoted");
+            } else if (bigGameField[shootedCell[0]][shootedCell[1]].equals("` ") && playerType.equals(Gamer.TypeOfPlayer.Human)) {
+                System.out.println("there is no necessity to shot here");
+            } else
+                hit = false;
         }
         if (shipAreDead) {
             createDeadFieldAroundShip(field.getBigGameField(), field);
         }
+        if (deadShips1 >= 10) {
+            this.allShipsAreDead1 = true;
+            hit = true;
+        } else if (deadShips2 >= 10) {
+            this.allShipsAreDead2 = true;
+            hit = true;
+
+        }
+
         return hit;
     }
 

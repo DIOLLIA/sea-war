@@ -3,8 +3,6 @@
  */
 public class Field {
     private static final String LETTERS[] = {"A ", "B ", "C ", "D ", "E ", "F ", "G ", "H ", "I ", "J "};
-    Game game;
-    Gamer gamer;
     private String[][] bigGameField = new String[11][11];
     private Ship[] fleet;
 
@@ -26,10 +24,6 @@ public class Field {
 
     public String[][] getBigGameField() {
         return bigGameField;
-    }
-
-    public void setBigGameField(String[][] bigGameField) {
-        this.bigGameField = bigGameField;
     }
 
     private void initFieldLetters() {
@@ -70,9 +64,9 @@ public class Field {
         return playerField[coordinate.getX()][coordinate.getY()].equals(EMPTY_CELL);
     }
 
-    void printTwoFielsdBeside(Field field1, Field field2) {
+    void printTwoFielsdBeside(Field field1, Field field2, String name1, String name2) {
 
-        System.out.println("поле игрока " + "                 "+ "поле игрока ");
+        System.out.println( name1 +"'s field" + "         " +  name2 + "'s field");
         for (int i = 0; i < bigGameField.length; i++) {
             for (int j = 0; j < bigGameField.length; j++) {
                 if (field1.bigGameField[i][j].equals(DECK))
@@ -81,8 +75,8 @@ public class Field {
                     System.out.print("~ ");
                 else if (field1.bigGameField[i][j].equals("* "))
                     System.out.print("~ ");
-else
-                System.out.print(field1.bigGameField[i][j]);
+                else
+                    System.out.print(field1.bigGameField[i][j]);
             }
             System.out.print("        ");
             for (int j = 0; j < bigGameField.length; j++) {
@@ -93,7 +87,33 @@ else
                 else if (field2.bigGameField[i][j].equals("* "))
                     System.out.print("~ ");
                 else
-                System.out.print(field2.bigGameField[i][j]);
+                    System.out.print(field2.bigGameField[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
+    void printTwoFielsdBesideClear(Field field1, Field field2, String name1, String name2) {
+
+        System.out.println( name1 +"'s field" + "         " +  name2 + "'s field");
+        for (int i = 0; i < bigGameField.length; i++) {
+            for (int j = 0; j < bigGameField.length; j++) {
+
+                if (field1.bigGameField[i][j].equals("~ "))
+                    System.out.print("~ ");
+                else if (field1.bigGameField[i][j].equals("* "))
+                    System.out.print("~ ");
+                else
+                    System.out.print(field1.bigGameField[i][j]);
+            }
+            System.out.print("        ");
+            for (int j = 0; j < bigGameField.length; j++) {
+                if (field2.bigGameField[i][j].equals("~ "))
+                    System.out.print("~ ");
+                else if (field2.bigGameField[i][j].equals("* "))
+                    System.out.print("~ ");
+                else
+                    System.out.print(field2.bigGameField[i][j]);
             }
             System.out.println();
         }
@@ -103,6 +123,6 @@ else
 
         String literABC = LETTERS[coordinate.getY() - 1];
         String numberOfLine = String.valueOf(coordinate.getX());
-        System.out.println("выстрел в " + literABC + " " + numberOfLine);
+        System.out.println("SHOT IN " + literABC + " " + numberOfLine);
     }
 }
