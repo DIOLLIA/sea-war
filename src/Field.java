@@ -6,13 +6,22 @@ public class Field {
     private String[][] bigGameField = new String[11][11];
     private Ship[] fleet;
 
+    private final String SHOOTED_CELL = "X ";
+    private static final String STAR = "* ";
+    private final String EMPTY_CELL = "~ ";
+    private final String DECK = "0 ";
 
     public String STAR() {
         return EMPTY_CELL;
     }
+    public String getSHOOTED_CELL() {
+        return SHOOTED_CELL;
+    }
 
-    private final String EMPTY_CELL = "~ ";
-    private final String DECK = "0 ";
+
+    public String getDECK() {
+        return DECK;
+    }
 
     public Ship[] getFleet() {
         return fleet;
@@ -124,5 +133,58 @@ public class Field {
         String literABC = LETTERS[coordinate.getY() - 1];
         String numberOfLine = String.valueOf(coordinate.getX());
         System.out.println("SHOT IN " + literABC + " " + numberOfLine);
+    }
+    void createDeadPointsAroundShip(String[][] bigGameField, Field field) {
+        for (int y = 1; y < bigGameField.length; y++) {
+            for (int x = 1; x < bigGameField.length; x++) {
+
+                if (bigGameField[y][x].equals(SHOOTED_CELL)) {//5
+                    if (x <= 10 && y < 10 && x > 1 && y >= 1) {
+                        if (bigGameField[y + 1][x - 1].equals(STAR)) {//1
+                            bigGameField[y + 1][x - 1] = ("` ");
+                        }
+                    }
+                    if (x <= 10 && y < 10 && x >= 1 && y >= 1) {
+                        if (bigGameField[y + 1][x].equals(STAR)) {//2
+                            bigGameField[y + 1][x] = ("` ");
+                        }
+                    }
+                    if (x < 10 && y < 10 && x >= 1 && y >= 1) {
+                        if (bigGameField[y + 1][x + 1].equals(STAR)) {//3
+                            bigGameField[y + 1][x + 1] = ("` ");
+                        }
+                    }
+                    if (x <= 10 && y <= 10 && x > 1 && y >= 1) {
+                        if (bigGameField[y][x - 1].equals(STAR)) {//4
+                            bigGameField[y][x - 1] = ("` ");
+                        }
+                    }
+                    if (x < 10 && y <= 10 && x >= 1 && y >= 1) {
+                        if (bigGameField[y][x + 1].equals(STAR)) {//6
+                            bigGameField[y][x + 1] = ("` ");
+                        }
+                    }
+                    if (x <= 10 && y <= 10 && x > 1 && y > 1) {
+                        if (bigGameField[y - 1][x - 1].equals(STAR)) {//7
+                            bigGameField[y - 1][x - 1] = ("` ");
+                        }
+                    }
+                    if (x <= 10 && y <= 10 && x >= 1 && y > 1) {
+                        if (bigGameField[y - 1][x].equals(STAR)) {//8
+                            bigGameField[y - 1][x] = ("` ");
+                        }
+                    }
+                    if (x < 10 && y <= 10 && x >= 1 && y > 1) {
+                        if (bigGameField[y - 1][x + 1].equals(STAR)) {//9
+                            bigGameField[y - 1][x + 1] = ("` ");
+                        }
+                    }
+
+                }
+            }
+
+
+        }
+
     }
 }

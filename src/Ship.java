@@ -93,6 +93,7 @@ public class Ship {
     }
 
     static class Point {
+
         private int x;
         private int y;
 
@@ -100,7 +101,6 @@ public class Ship {
             this.x = x;
             this.y = y;
         }
-
         public int getX() {
             return x;
         }

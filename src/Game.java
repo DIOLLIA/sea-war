@@ -15,80 +15,144 @@ import java.util.Scanner;
  * Created by Andre on 19.10.2017.
  */
 public class Game {
-    private static int counter = 0;
-    Gamer.TypeOfPlayer typeOfPlayer;
-    private Ship[] ships;
+
+    private static String firstPlayer = "";
+    private final String DECK = "0 ";
+    private TypeOfGame typeOfGame;
     private Gamer gamer1;
     private Gamer gamer2;
-    private final String DECK = "0 ";
-    Gun gun = new Gun();
-
-    public String nameOfFirstPlayer;
-    static public String nameOfKompukter;
 
     public Gamer getGamer1() {
         return gamer1;
     }
 
-    void start() {
+    public void setGamer1(Gamer gamer1) {
+        this.gamer1 = gamer1;
+    }
+
+    public Gamer getGamer2() {
+        return gamer2;
+    }
+
+    public void setGamer2(Gamer gamer2) {
+        this.gamer2 = gamer2;
+    }
+
+    public TypeOfGame getTypeOfGame() {
+        return typeOfGame;
+    }
+
+    public void setTypeOfGame(TypeOfGame typeOfGame) {
+        this.typeOfGame = typeOfGame;
+    }
+
+    public void start() {
         greetings();
-        gamer1 = new Gamer(typeOfPlayer = typeOfGamer());
-        gamer1.setField(Field.getBaseFieldInstance());
-        if (typeOfPlayer.equals(Gamer.TypeOfPlayer.Computer)) {
-            gamer1.setName("KoMPukTeP###111");
-        } else {
-            gamer1.setName(getNameOfPlayer());
+        setTypeOfGame(chooseTypeOfGame());
+        initGamers();
+        initFields();
+        initFleet();
+
+        switch (firstPlayer) {
+            case ("Computer"): {
+                //while (isItVictory(gamer1.getField(), gamer2.getField())) {
+                while (gamer1.getAmountOfShips() != 0 && gamer2.getAmountOfShips() != 0) {
+                    shoot(gamer1);
+                    if (gamer1.getAmountOfShips() > 0 && gamer2.getAmountOfShips() > 0)
+                        shoot(gamer2);
+                }
+                break;
+            }
+            case ("Human"): {
+                //while (isItVictory(gamer1.getField(), gamer2.getField())) {
+                while (gamer1.getAmountOfShips() != 0) {
+                    shoot(gamer1);
+                    if (isItVictory(gamer1.getField(), gamer2.getField()))
+                        shoot(gamer2);
+                }
+                break;
+            }
         }
-        Field field1 = gamer1.getField();
+
+    }
+
+    public void shoot(Gamer gamer) {
+        System.out.println("turn to shot " + gamer.getName() + "'s ships");
+        if (gamer.getTypeOfGamer().equals(TypeOfGamer.HUMAN)){
+            while (!checkResultOfShoot(gamer.getField(), Ship.getCoordinateFromHuman(),gamer));
+        }
+        else
+        while (!checkResultOfShoot(gamer.getField(), Ship.generateCoordinate(), gamer)) {
+        }
+    }
+
+    private void initFleet() {
+        Field field1 = getGamer1().getField();
         field1.setFleet(createShips());
-        ships = field1.getFleet();
-        placeShips(field1, ships);
-        gamer2 = new Gamer(Gamer.TypeOfPlayer.Computer);
-        gamer2.setField(Field.getBaseFieldInstance());
-        gamer2.setName("KOMP2ZZ01ver");
+        Ship[] ships1 = field1.getFleet();
+        placeShips(field1, ships1);
+
         Field field2 = gamer2.getField();
         field2.setFleet(createShips());
-        ships = field2.getFleet();
-        placeShips(field2, ships);
-
-        nameOfFirstPlayer = gamer1.getName();
-        nameOfKompukter = gamer2.getName();
-        do {
-
-            shoot(field1, field2);
-        }
-         while (isItVictory(field1, field2));
-      //  while (!Gun.allShipsAreDead1 && !Gun.allShipsAreDead2);
-
-        field1.printTwoFielsdBesideClear(field1, field2, nameOfFirstPlayer, nameOfKompukter);
+        Ship[] ships2 = field2.getFleet();
+        placeShips(field2, ships2);
     }
 
-    public void shoot(Field field1, Field field2) {
-        if (counter % 2 == 0) {
-            System.out.println("turn of " + gamer2.getName() + ", shoot in field 1");
-            while (!gun.isShotFinished(field1, Ship.generateCoordinate(), typeOfPlayer)) {
-                // field1.printTwoFielsdBeside(field1, field2, nameOfFirstPlayer, nameOfKompukter);
-            }
-            counter++;
-        } else if (typeOfPlayer.equals(Gamer.TypeOfPlayer.Human)) {
-            humanShot(field2);
-        } else if (typeOfPlayer.equals(Gamer.TypeOfPlayer.Computer)) {
-            System.out.println(gamer1.getName() + ", shoot in field 2");
-            while (!gun.isShotFinished(field2, Ship.generateCoordinate(), typeOfPlayer)) {
-                // field1.printTwoFielsdBeside(field1, field2, nameOfFirstPlayer, nameOfKompukter);
-            }
-            counter++;
-        }
-        field1.printTwoFielsdBeside(field1, field2, nameOfFirstPlayer, nameOfKompukter);
+    private void initFields() {
+        Gamer gamer = getGamer1();
+        gamer.setField(Field.getBaseFieldInstance());
+
+        Gamer gamer2 = getGamer2();
+        gamer2.setField(Field.getBaseFieldInstance());
     }
 
-    public void humanShot(Field computersField) {
-        String humanName = getGamer1().getName();
-        System.out.println(humanName + ", type coordinate in <<literaNUMBER>> format, for example D2");
-        while (!gun.isShotFinished(computersField, Ship.getCoordinateFromHuman(), typeOfPlayer)) {
-            computersField.printTwoFielsdBeside(gamer1.getField(), gamer2.getField(), nameOfFirstPlayer, nameOfKompukter);
+    private void initGamers() {
+        switch (getTypeOfGame()) {
+            case HUMAN_VS_COMPUTER:
+                Gamer gamer1 = new Gamer(TypeOfGamer.HUMAN);
+                gamer1.setName(getNameOfPlayer());
+
+                setGamer1(gamer1);
+                setGamer2(new Gamer(TypeOfGamer.COMPUTER, "Windows 1988"));
+                break;
+            case COMPUTER_VS_COMPUTER:
+                setGamer1(new Gamer(TypeOfGamer.COMPUTER, "MSDOS"));
+                setGamer2(new Gamer(TypeOfGamer.COMPUTER, "Windows 1988"));
+                break;
         }
-        counter++;
+    }
+
+    private TypeOfGame chooseTypeOfGame() {
+        TypeOfGame gamerVsComputer = null;
+        System.out.println("choose type of battle: \n type 1 for humanVSkomp\n type 2 for kompVSkomp");
+        Scanner sc = new Scanner(System.in);
+        while (gamerVsComputer == null) {
+            int typeOfSecondPlayer = 0;
+            try {
+                typeOfSecondPlayer = sc.nextInt();
+            } catch (InputMismatchException wrongNumber) {
+                System.out.println("Your choise is 1 or 2 only");
+                sc.next();
+            }
+
+            switch (typeOfSecondPlayer) {
+                case 1:
+                    System.out.println("you've choosed humanVSkomp");
+                    gamerVsComputer = TypeOfGame.HUMAN_VS_COMPUTER;
+                    firstPlayer = "Human";
+                    break;
+                case 2:
+                    System.out.println("you've choosed kompVSkomp");
+                    gamerVsComputer = TypeOfGame.COMPUTER_VS_COMPUTER;
+                    firstPlayer = "Computer";
+                    break;
+                default:
+                    System.out.println("Choose correctly! type 1 for humanVSkomp or type 2 for kompVSkomp");
+                    gamerVsComputer = null;
+                    sc.hasNext();
+            }
+        }
+        return gamerVsComputer;
     }
 
     private void placeShips(Field field, Ship[] ships) {
@@ -239,7 +303,7 @@ public class Game {
         return ships;
     }
 
-    public static void greetings() {
+    private static void greetings() {
         System.out.println("SeaBattle v0.1");
     }
 
@@ -337,42 +401,151 @@ public class Game {
         }
         if (a == 0) {
             victory = false;
-            System.out.println("VICTORY OF " + nameOfKompukter);
+            System.out.println("VICTORY OF " + gamer2.getName());
         }
         if (b == 0 && a != 0) {
             victory = false;
-            System.out.println("VICTORY OF " + nameOfFirstPlayer);
+            System.out.println("VICTORY OF " + gamer1.getName());
         }
         return victory;
     }
 
-    private Gamer.TypeOfPlayer typeOfGamer() {
-        System.out.println("choose type of battle: \n type 1 for humanVSkomp\n type 2 for kompVSkomp");
-        Scanner sc = new Scanner(System.in);
-        while (typeOfPlayer == null) {
-            int typeOfSecondPlayer = 0;
-            try {
-                typeOfSecondPlayer = sc.nextInt();
-            } catch (InputMismatchException wrongNumber) {
-                System.out.println("Your choise is 1 or 2 only");
-                sc.next();
+    private boolean checkResultOfShoot(Field field, Ship.Point coordinate, Gamer gamer) {
+        boolean hit = false;
+        boolean wonded = false;
+        int[] shootedCell = {coordinate.getX(), coordinate.getY()};
+        String[][] bigGameField = field.getBigGameField();
+
+        if (bigGameField[shootedCell[0]][shootedCell[1]].equals(DECK)) {
+            field.seeYourCoordinateCorrect(coordinate);
+            bigGameField[shootedCell[0]][shootedCell[1]] = field.getSHOOTED_CELL();
+
+            if (coordinate.getX() > 1) {
+                if (bigGameField[shootedCell[0] - 1][shootedCell[1]].equals(DECK)) {
+                    wonded = true;
+                }
+                if (wonded == false) {
+                    if (bigGameField[shootedCell[0] - 1][shootedCell[1]].equals(field.getSHOOTED_CELL())
+                            && coordinate.getX() > 2 && bigGameField[shootedCell[0] - 2][shootedCell[1]].equals(DECK))
+                        wonded = true;
+                }
+                if (wonded == false) {
+                    if (coordinate.getX() > 3 && bigGameField[shootedCell[0] - 2][shootedCell[1]].equals(field.getSHOOTED_CELL())
+                            && bigGameField[shootedCell[0] - 1][shootedCell[1]].equals(field.getSHOOTED_CELL())
+                            && bigGameField[shootedCell[0] - 3][shootedCell[1]].equals(DECK))
+                        wonded = true;
+                }
+            }
+            if (coordinate.getX() < 10) {
+                if (bigGameField[shootedCell[0] + 1][shootedCell[1]].equals(DECK)) {
+                    wonded = true;
+                }
+                if (wonded == false) {
+                    if (bigGameField[shootedCell[0] + 1][shootedCell[1]].equals(field.getSHOOTED_CELL())
+                            && coordinate.getX() < 9 && bigGameField[shootedCell[0] + 2][shootedCell[1]].equals(DECK))
+                        wonded = true;
+                }
+                if (wonded == false) {
+                    if (coordinate.getX() < 8 && bigGameField[shootedCell[0] + 1][shootedCell[1]].equals(field.getSHOOTED_CELL())
+                            && bigGameField[shootedCell[0] + 2][shootedCell[1]].equals(field.getSHOOTED_CELL())
+                            && bigGameField[shootedCell[0] + 3][shootedCell[1]].equals(DECK))
+                        wonded = true;
+                }
             }
 
-            switch (typeOfSecondPlayer) {
-                case 1:
-                    System.out.println("you've choosed humanVSkomp");
-                    typeOfPlayer = Gamer.TypeOfPlayer.Human;
-                    break;
-                case 2:
-                    System.out.println("you've choosed kompVSkomp");
-                    typeOfPlayer = Gamer.TypeOfPlayer.Computer;
-                    break;
-                default:
-                    System.out.println("Choose correctly! type 1 for humanVSkomp or type 2 for kompVSkomp");
-                    typeOfPlayer = null;
-                    sc.hasNext();
+            if (coordinate.getY() > 1) {
+                if (bigGameField[shootedCell[0]][shootedCell[1] - 1].equals(DECK)) {
+                    wonded = true;
+                }
+
+                if (wonded == false) {
+                    if (bigGameField[shootedCell[0]][shootedCell[1] - 1].equals(field.getSHOOTED_CELL())
+                            && coordinate.getY() > 2 && bigGameField[shootedCell[0]][shootedCell[1] - 2].equals(DECK))
+                        wonded = true;
+                }
+                if (wonded == false) {
+                    if (coordinate.getY() > 3 && bigGameField[shootedCell[0]][shootedCell[1] - 1].equals(field.getSHOOTED_CELL())
+                            && bigGameField[shootedCell[0]][shootedCell[1] - 2].equals(field.getSHOOTED_CELL())
+                            && bigGameField[shootedCell[0]][shootedCell[1] - 3].equals(DECK))
+                        wonded = true;
+                }
+            }
+            if (coordinate.getY() < 10) {
+                if (bigGameField[shootedCell[0]][shootedCell[1] + 1].equals(DECK)) {
+                    wonded = true;
+                }
+                if (wonded == false) {
+                    if (bigGameField[shootedCell[0]][shootedCell[1] + 1].equals(field.getSHOOTED_CELL()) && coordinate.getY() < 9 && bigGameField[shootedCell[0]][shootedCell[1] + 2].equals(DECK))
+                        wonded = true;
+                }
+                if (wonded == false) {
+                    if (coordinate.getY() < 8 && bigGameField[shootedCell[0]][shootedCell[1] + 1].equals(field.getSHOOTED_CELL())
+                            && bigGameField[shootedCell[0]][shootedCell[1] + 2].equals(field.getSHOOTED_CELL())
+                            && bigGameField[shootedCell[0]][shootedCell[1] + 3].equals(DECK))
+                        wonded = true;
+                }
+            }
+            if (wonded == true) {
+                System.out.println("wounded!");
+                //field.printTwoFielsdBesideClear(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
+                field.printTwoFielsdBesideClear(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
+                return false;
+            } else
+
+            {
+                System.out.println("drowned");
+                // field.printTwoFielsdBeside(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
+                field.printTwoFielsdBesideClear(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
+                gamer.decreaseAmountOfShips();
+                if (gamer.getAmountOfShips() == 0) {
+                    field.createDeadPointsAroundShip(field.getBigGameField(), field);
+                    victory();
+                    gamer.getField().printTwoFielsdBesideClear(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
+                    return true;
+                }
+                field.createDeadPointsAroundShip(field.getBigGameField(), field);
+                return false;
+            }
+        } else if (bigGameField[shootedCell[0]][shootedCell[1]].
+
+                equals("* ") || bigGameField[shootedCell[0]][shootedCell[1]].
+
+                equals("~ "))
+
+        {
+            field.seeYourCoordinateCorrect(coordinate);
+            System.out.println("missed");
+            bigGameField[shootedCell[0]][shootedCell[1]] = "\" ";
+            field.printTwoFielsdBeside(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
+            return true;
+        } else if (bigGameField[shootedCell[0]][shootedCell[1]].
+
+                equals("\" ") || bigGameField[shootedCell[0]][shootedCell[1]].
+
+                equals(field.getSHOOTED_CELL()))
+
+        {
+            if (firstPlayer.equals("Human")) {
+                System.out.println("That cell is almost shoted");
+                return false;
+            } else if (bigGameField[shootedCell[0]][shootedCell[1]].equals("` ") && firstPlayer.equals("Human")) {
+                System.out.println("there is no necessity to shot here, it's dead area");
+                return false;
             }
         }
-        return typeOfPlayer;
+        return hit;
+    }
+
+    private void victory() {
+        if (gamer1.getAmountOfShips() == 0) {
+            System.out.println("Победил Игрок " + gamer2.getName());
+
+        }
+        if (gamer2.getAmountOfShips() == 0)
+
+        {
+            System.out.println("Победил Игрок " + gamer1.getName());
+        }
+
     }
 }
