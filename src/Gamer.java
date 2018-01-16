@@ -11,19 +11,8 @@ public class Gamer {
         return amountOfShips;
     }
 
-    public void setAmountOfShips(int amountOfShips) {
-        this.amountOfShips = amountOfShips;
-    }
-
     public TypeOfGamer getTypeOfGamer() {
         return typeOfGamer;
-    }
-
-    public void setTypeOfGamer(TypeOfGamer typeOfGamer) {
-        this.typeOfGamer = typeOfGamer;
-    }
-
-    public Gamer() {
     }
 
     public Gamer(TypeOfGamer typeOfGamer) {

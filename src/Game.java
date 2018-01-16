@@ -4,20 +4,12 @@ import java.io.InputStreamReader;
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
-
-
-/*TODO рисовать поле после каждого выстрела (ранил, убил, не попал...)
-сделать вторую сложность для обсрела раненой клетки
-после потомления игроком 1 корабля иногда происходит зацикливание выведения поля UPD проверить еще раз!!!! возможно исправлено
-*/
-
 /**
  * Created by Andre on 19.10.2017.
  */
 public class Game {
 
     private static String firstPlayer = "";
-    private final String DECK = "0 ";
     private TypeOfGame typeOfGame;
     private Gamer gamer1;
     private Gamer gamer2;
@@ -52,10 +44,9 @@ public class Game {
         initGamers();
         initFields();
         initFleet();
-
+        gamer1.getField().printTwoFielsdBeside(gamer2.getField(),gamer1.getField(),gamer1.getName(),gamer2.getName());
         switch (firstPlayer) {
             case ("Computer"): {
-                //while (isItVictory(gamer1.getField(), gamer2.getField())) {
                 while (gamer1.getAmountOfShips() != 0 && gamer2.getAmountOfShips() != 0) {
                     shoot(gamer1);
                     if (gamer1.getAmountOfShips() > 0 && gamer2.getAmountOfShips() > 0)
@@ -64,7 +55,6 @@ public class Game {
                 break;
             }
             case ("Human"): {
-                //while (isItVictory(gamer1.getField(), gamer2.getField())) {
                 while (gamer1.getAmountOfShips() != 0) {
                     shoot(gamer1);
                     if (isItVictory(gamer1.getField(), gamer2.getField()))
@@ -73,17 +63,15 @@ public class Game {
                 break;
             }
         }
-
     }
 
     public void shoot(Gamer gamer) {
-        System.out.println("turn to shot " + gamer.getName() + "'s ships");
-        if (gamer.getTypeOfGamer().equals(TypeOfGamer.HUMAN)){
-            while (!checkResultOfShoot(gamer.getField(), Ship.getCoordinateFromHuman(),gamer));
-        }
-        else
-        while (!checkResultOfShoot(gamer.getField(), Ship.generateCoordinate(), gamer)) {
-        }
+        System.out.println("turn of gamer " + gamer.getName() + " to SHOT!");
+        if (gamer.getTypeOfGamer().equals(TypeOfGamer.HUMAN)) {
+            while (!checkResultOfShoot(gamer.getField(), Ship.getCoordinateFromHuman(), gamer)) ;
+        } else
+            while (!checkResultOfShoot(gamer.getField(), Ship.generateCoordinate(), gamer)) {
+            }
     }
 
     private void initFleet() {
@@ -237,9 +225,10 @@ public class Game {
     }
 
     private boolean checkFreeSpaceForPlaceTheShip(String[][] bigGameField, Ship ship) {
+        String deck = gamer1.getField().getDECK();
         Ship.Point coordinate = ship.getCoordinate();
         boolean isShipPlaced = false;
-        int[] delta = chooseDirection(ship.getDeckAmount());
+        int[] delta = chooseDirection();
         int cellsAmountInChoosedDirectionX = (ship.getDeckAmount() - 1) * delta[0];
         int cellsAmountInChoosedDirectionY = (ship.getDeckAmount() - 1) * delta[1];
         if (coordinate.getX() + cellsAmountInChoosedDirectionX >= 1 && //1  is the start of coordinates
@@ -247,9 +236,10 @@ public class Game {
                 coordinate.getY() + cellsAmountInChoosedDirectionY <= 10 &&
                 coordinate.getY() + cellsAmountInChoosedDirectionY >= 1) {
             if (isShipExistOnChoosedDirection(bigGameField, ship, delta)) {
-                bigGameField[coordinate.getX()][coordinate.getY()] = DECK;
+               // bigGameField[coordinate.getX()][coordinate.getY()] = DECK;
+                bigGameField[coordinate.getX()][coordinate.getY()] = deck;
                 for (int i = 1; i < ship.getDeckAmount(); i++) {
-                    bigGameField[coordinate.getX() + delta[0] * i][coordinate.getY() + delta[1] * i] = DECK;
+                    bigGameField[coordinate.getX() + delta[0] * i][coordinate.getY() + delta[1] * i] = deck;
                 }
                 isShipPlaced = true;
             } else {
@@ -259,7 +249,7 @@ public class Game {
         return isShipPlaced;
     }
 
-    protected int[] chooseDirection(int deckAmount) {
+    protected int[] chooseDirection() {
         int a;
         Random random = new Random();
         a = random.nextInt(4) + 1;
@@ -323,7 +313,7 @@ public class Game {
         for (int y = 1; y < bigGameField.length; y++) {
             for (int x = 1; x < bigGameField.length; x++) {
 
-                if (bigGameField[y][x].equals(DECK)) {//5
+                if (bigGameField[y][x].equals(field.getDECK())) {//5
                     if (x <= 10 && y < 10 && x > 1 && y >= 1) {
                         if (bigGameField[y + 1][x - 1].equals(field.STAR())) {//1
                             bigGameField[y + 1][x - 1] = ("* ");
@@ -371,6 +361,7 @@ public class Game {
     }
 
     boolean isItVictory(Field field1, Field field2) {
+        String deck = field1.getDECK();
         boolean victory = true;
         int a = 0;
         int b = 0;
@@ -380,7 +371,7 @@ public class Game {
                 break;
             }
             for (int j = 0; j < field1.getBigGameField().length; j++) {
-                if (field1.getBigGameField()[i][j].equals(DECK)) {
+                if (field1.getBigGameField()[i][j].equals(deck)) {
                     a++;
                     break;
                 }
@@ -392,7 +383,7 @@ public class Game {
                     break;
                 }
                 for (int j = 0; j < field2.getBigGameField().length; j++) {
-                    if (field2.getBigGameField()[i][j].equals(DECK)) {
+                    if (field2.getBigGameField()[i][j].equals(deck)) {
                         b++;
                         break;
                     }
@@ -401,150 +392,141 @@ public class Game {
         }
         if (a == 0) {
             victory = false;
-            System.out.println("VICTORY OF " + gamer2.getName());
+            System.out.println("VICTORY OF " + gamer1.getName());
         }
         if (b == 0 && a != 0) {
             victory = false;
-            System.out.println("VICTORY OF " + gamer1.getName());
+            System.out.println("VICTORY OF " + gamer2.getName());
         }
         return victory;
     }
 
     private boolean checkResultOfShoot(Field field, Ship.Point coordinate, Gamer gamer) {
+        String deck = field.getDECK();
         boolean hit = false;
         boolean wonded = false;
         int[] shootedCell = {coordinate.getX(), coordinate.getY()};
         String[][] bigGameField = field.getBigGameField();
 
-        if (bigGameField[shootedCell[0]][shootedCell[1]].equals(DECK)) {
+        if (bigGameField[shootedCell[0]][shootedCell[1]].equals(deck)) {
             field.seeYourCoordinateCorrect(coordinate);
             bigGameField[shootedCell[0]][shootedCell[1]] = field.getSHOOTED_CELL();
 
             if (coordinate.getX() > 1) {
-                if (bigGameField[shootedCell[0] - 1][shootedCell[1]].equals(DECK)) {
+                if (bigGameField[shootedCell[0] - 1][shootedCell[1]].equals(deck)) {
                     wonded = true;
                 }
                 if (wonded == false) {
                     if (bigGameField[shootedCell[0] - 1][shootedCell[1]].equals(field.getSHOOTED_CELL())
-                            && coordinate.getX() > 2 && bigGameField[shootedCell[0] - 2][shootedCell[1]].equals(DECK))
+                            && coordinate.getX() > 2 && bigGameField[shootedCell[0] - 2][shootedCell[1]].equals(deck))
                         wonded = true;
                 }
                 if (wonded == false) {
                     if (coordinate.getX() > 3 && bigGameField[shootedCell[0] - 2][shootedCell[1]].equals(field.getSHOOTED_CELL())
                             && bigGameField[shootedCell[0] - 1][shootedCell[1]].equals(field.getSHOOTED_CELL())
-                            && bigGameField[shootedCell[0] - 3][shootedCell[1]].equals(DECK))
+                            && bigGameField[shootedCell[0] - 3][shootedCell[1]].equals(deck))
                         wonded = true;
                 }
             }
             if (coordinate.getX() < 10) {
-                if (bigGameField[shootedCell[0] + 1][shootedCell[1]].equals(DECK)) {
+                if (bigGameField[shootedCell[0] + 1][shootedCell[1]].equals(deck)) {
                     wonded = true;
                 }
                 if (wonded == false) {
                     if (bigGameField[shootedCell[0] + 1][shootedCell[1]].equals(field.getSHOOTED_CELL())
-                            && coordinate.getX() < 9 && bigGameField[shootedCell[0] + 2][shootedCell[1]].equals(DECK))
+                            && coordinate.getX() < 9 && bigGameField[shootedCell[0] + 2][shootedCell[1]].equals(deck))
                         wonded = true;
                 }
                 if (wonded == false) {
                     if (coordinate.getX() < 8 && bigGameField[shootedCell[0] + 1][shootedCell[1]].equals(field.getSHOOTED_CELL())
                             && bigGameField[shootedCell[0] + 2][shootedCell[1]].equals(field.getSHOOTED_CELL())
-                            && bigGameField[shootedCell[0] + 3][shootedCell[1]].equals(DECK))
+                            && bigGameField[shootedCell[0] + 3][shootedCell[1]].equals(deck))
                         wonded = true;
                 }
             }
 
             if (coordinate.getY() > 1) {
-                if (bigGameField[shootedCell[0]][shootedCell[1] - 1].equals(DECK)) {
+                if (bigGameField[shootedCell[0]][shootedCell[1] - 1].equals(deck)) {
                     wonded = true;
                 }
 
                 if (wonded == false) {
                     if (bigGameField[shootedCell[0]][shootedCell[1] - 1].equals(field.getSHOOTED_CELL())
-                            && coordinate.getY() > 2 && bigGameField[shootedCell[0]][shootedCell[1] - 2].equals(DECK))
+                            && coordinate.getY() > 2 && bigGameField[shootedCell[0]][shootedCell[1] - 2].equals(deck))
                         wonded = true;
                 }
                 if (wonded == false) {
                     if (coordinate.getY() > 3 && bigGameField[shootedCell[0]][shootedCell[1] - 1].equals(field.getSHOOTED_CELL())
                             && bigGameField[shootedCell[0]][shootedCell[1] - 2].equals(field.getSHOOTED_CELL())
-                            && bigGameField[shootedCell[0]][shootedCell[1] - 3].equals(DECK))
+                            && bigGameField[shootedCell[0]][shootedCell[1] - 3].equals(deck))
                         wonded = true;
                 }
             }
             if (coordinate.getY() < 10) {
-                if (bigGameField[shootedCell[0]][shootedCell[1] + 1].equals(DECK)) {
+                if (bigGameField[shootedCell[0]][shootedCell[1] + 1].equals(deck)) {
                     wonded = true;
                 }
                 if (wonded == false) {
-                    if (bigGameField[shootedCell[0]][shootedCell[1] + 1].equals(field.getSHOOTED_CELL()) && coordinate.getY() < 9 && bigGameField[shootedCell[0]][shootedCell[1] + 2].equals(DECK))
+                    if (bigGameField[shootedCell[0]][shootedCell[1] + 1].equals(field.getSHOOTED_CELL())
+                            && coordinate.getY() < 9 && bigGameField[shootedCell[0]][shootedCell[1] + 2].equals(deck))
                         wonded = true;
                 }
                 if (wonded == false) {
                     if (coordinate.getY() < 8 && bigGameField[shootedCell[0]][shootedCell[1] + 1].equals(field.getSHOOTED_CELL())
                             && bigGameField[shootedCell[0]][shootedCell[1] + 2].equals(field.getSHOOTED_CELL())
-                            && bigGameField[shootedCell[0]][shootedCell[1] + 3].equals(DECK))
+                            && bigGameField[shootedCell[0]][shootedCell[1] + 3].equals(deck))
                         wonded = true;
                 }
             }
             if (wonded == true) {
                 System.out.println("wounded!");
-                //field.printTwoFielsdBesideClear(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
-                field.printTwoFielsdBesideClear(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
+                field.printTwoFielsdBeside(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
                 return false;
-            } else
-
-            {
+            } else {
                 System.out.println("drowned");
-                // field.printTwoFielsdBeside(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
-                field.printTwoFielsdBesideClear(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
+                field.createDeadPointsAroundShip(gamer.getField().getBigGameField());
+                field.printTwoFielsdBeside(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
                 gamer.decreaseAmountOfShips();
                 if (gamer.getAmountOfShips() == 0) {
-                    field.createDeadPointsAroundShip(field.getBigGameField(), field);
+                    field.createDeadPointsAroundShip(gamer.getField().getBigGameField());
                     victory();
                     gamer.getField().printTwoFielsdBesideClear(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
                     return true;
                 }
-                field.createDeadPointsAroundShip(field.getBigGameField(), field);
                 return false;
             }
         } else if (bigGameField[shootedCell[0]][shootedCell[1]].
-
                 equals("* ") || bigGameField[shootedCell[0]][shootedCell[1]].
-
-                equals("~ "))
-
-        {
+                equals("~ ")) {
             field.seeYourCoordinateCorrect(coordinate);
             System.out.println("missed");
             bigGameField[shootedCell[0]][shootedCell[1]] = "\" ";
             field.printTwoFielsdBeside(gamer1.getField(), gamer2.getField(), gamer1.getName(), gamer2.getName());
             return true;
-        } else if (bigGameField[shootedCell[0]][shootedCell[1]].
-
-                equals("\" ") || bigGameField[shootedCell[0]][shootedCell[1]].
-
-                equals(field.getSHOOTED_CELL()))
-
-        {
+        } else if (bigGameField[shootedCell[0]][shootedCell[1]].equals("\" ")
+                || bigGameField[shootedCell[0]][shootedCell[1]].equals(field.getSHOOTED_CELL())) {
             if (firstPlayer.equals("Human")) {
                 System.out.println("That cell is almost shoted");
-                return false;
-            } else if (bigGameField[shootedCell[0]][shootedCell[1]].equals("` ") && firstPlayer.equals("Human")) {
-                System.out.println("there is no necessity to shot here, it's dead area");
-                return false;
             }
+            return false;
+        } else if (bigGameField[shootedCell[0]][shootedCell[1]].equals("` ")) {
+            if (firstPlayer.equals("Human")) {
+                System.out.println("there is not necessary to shot here, it's dead area");
+            }
+            return false;
         }
         return hit;
     }
 
     private void victory() {
         if (gamer1.getAmountOfShips() == 0) {
-            System.out.println("Победил Игрок " + gamer2.getName());
+            System.out.println("Победил Игрок " + gamer1.getName());
 
         }
         if (gamer2.getAmountOfShips() == 0)
 
         {
-            System.out.println("Победил Игрок " + gamer1.getName());
+            System.out.println("Победил Игрок " + gamer2.getName());
         }
 
     }

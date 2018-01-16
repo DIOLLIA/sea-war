@@ -14,10 +14,10 @@ public class Field {
     public String STAR() {
         return EMPTY_CELL;
     }
+
     public String getSHOOTED_CELL() {
         return SHOOTED_CELL;
     }
-
 
     public String getDECK() {
         return DECK;
@@ -73,9 +73,9 @@ public class Field {
         return playerField[coordinate.getX()][coordinate.getY()].equals(EMPTY_CELL);
     }
 
-    void printTwoFielsdBeside(Field field1, Field field2, String name1, String name2) {
+    void printTwoFielsdBeside(Field field2, Field field1, String name1, String name2) {
 
-        System.out.println( name1 +"'s field" + "         " +  name2 + "'s field");
+        System.out.println(name1 + "'s field" + "               " + name2 + "'s field");
         for (int i = 0; i < bigGameField.length; i++) {
             for (int j = 0; j < bigGameField.length; j++) {
                 if (field1.bigGameField[i][j].equals(DECK))
@@ -102,9 +102,9 @@ public class Field {
         }
     }
 
-    void printTwoFielsdBesideClear(Field field1, Field field2, String name1, String name2) {
+    void printTwoFielsdBesideClear(Field field2, Field field1, String name1, String name2) {
 
-        System.out.println( name1 +"'s field" + "         " +  name2 + "'s field");
+        System.out.println(name1 + "'s field" + "         " + name2 + "'s field");
         for (int i = 0; i < bigGameField.length; i++) {
             for (int j = 0; j < bigGameField.length; j++) {
 
@@ -134,7 +134,8 @@ public class Field {
         String numberOfLine = String.valueOf(coordinate.getX());
         System.out.println("SHOT IN " + literABC + " " + numberOfLine);
     }
-    void createDeadPointsAroundShip(String[][] bigGameField, Field field) {
+
+    void createDeadPointsAroundShip(String[][] bigGameField) {
         for (int y = 1; y < bigGameField.length; y++) {
             for (int x = 1; x < bigGameField.length; x++) {
 

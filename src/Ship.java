@@ -1,26 +1,17 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Random;
 
 /**
  * Created by Andre on 19.10.2017.
  */
 public class Ship {
 
-    Ship() {
-
-    }
-
     private Point coordinate;
     private int deckAmount;
 
     public int getDeckAmount() {
         return deckAmount;
-    }
-
-    public void setDeckAmount(int deckAmount) {
-        this.deckAmount = deckAmount;
     }
 
     public Ship(int deckAmount) {
@@ -37,7 +28,6 @@ public class Ship {
 
     public static Point generateCoordinate() {
         return new Point((int) (Math.random() * 10 + 1), (int) (Math.random() * 10 + 1));
-
     }
 
     public static Point getCoordinateFromHuman() {
@@ -74,6 +64,10 @@ public class Ship {
                 x = 9;
             else if (coordinateFromHumanToChar[0] == 'J')
                 x = 10;
+            if (x>0&&x<=10){
+               }
+                else {
+                System.out.println("incorrect litter format\"litera type");}
             try {
                 y = Integer.parseInt(String.valueOf(coordinateFromHumanToChar[1]));
                 if (coordinateFromHumanToChar.length == 3 && coordinateFromHumanToChar[1] == '1' && coordinateFromHumanToChar[2] == '0') {
